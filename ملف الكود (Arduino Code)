@@ -1,1 +1,29 @@
+// تعريف الأطراف
+const int tempPin = A0;  // الطرف الذي يتصل به مستشعر LM35
+const int fanPin = 9;    // الطرف الذي يتصل به الريليه أو المروحة
 
+void setup() {
+  pinMode(fanPin, OUTPUT);  // تعريف طرف المروحة كمخرج
+  Serial.begin(9600);       // بداية الاتصال التسلسلي
+}
+
+void loop() {
+  // قراءة درجة الحرارة من مستشعر LM35
+  int tempReading = analogRead(tempPin);
+  float voltage = tempReading * 5.0 / 1024.0;
+  float temperatureC = voltage * 100;  // تحويل الجهد إلى درجة حرارة (مئوية)
+
+  // عرض درجة الحرارة في الشاشة التسلسلية
+  Serial.print("Temperature: ");
+  Serial.print(temperatureC);
+  Serial.println(" C");
+
+  // التحكم في المروحة بناءً على درجة الحرارة
+  if (temperatureC > 30) {  // إذا كانت درجة الحرارة أكبر من 30 درجة مئوية
+    digitalWrite(fanPin, HIGH);  // تشغيل المروحة
+  } else {
+    digitalWrite(fanPin, LOW);   // إيقاف المروحة
+  }
+
+  delay(1000);  // تأخير لمدة ثانية قبل القياس التالي
+}
